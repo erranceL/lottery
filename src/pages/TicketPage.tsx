@@ -46,91 +46,129 @@ export function TicketPage() {
     try {
       const next = claimTicket();
       navigate(`/ticket/${next.ticketId}`);
-    } catch {
-      alert(t("soldOut"));
+    } catch (err) {
+      alert(err instanceof Error && err.message === "paused" ? t("activityPaused") : t("soldOut"));
     }
   };
 
   return (
-    <main className="page">
-      <header className="ticket-header">
-        <Link to="/" className="ghost-btn back-btn">
-          ← {t("backHome")}
-        </Link>
-        <div className="ticket-no">
-          <span className="label">{t("ticketNo")}</span>
-          <strong className="mono">{ticket.displayNo}</strong>
-        </div>
-        <div className="chance-badge">
-          <strong>10</strong>
-          <span>{t("chances")}</span>
-        </div>
-      </header>
+    <main className="page page-wide">
+      <section className="ticket-shell">
+        <header className="hero">
+          <div className="brand-row">
+            <div className="tf-mark">TF</div>
+            <div>
+              <div className="eyebrow">{t("brandTagline")}</div>
+              <h1>{t("title")}</h1>
+            </div>
+            <div className="chance-badge">
+              <strong>10</strong>
+              <span>{t("chances")}</span>
+            </div>
+          </div>
+          <p className="tagline">{t("subtitle")}</p>
+        </header>
 
-      <section className="direction-panel">
-        <h2>{t("yourDirection")}</h2>
-        <div className="direction-card">
-          <ScratchCard revealed={issued.zones[0]} onComplete={() => completeZone(ticketId, 0)}>
-            <DirectionReveal symbol={ticket.target} />
-          </ScratchCard>
-        </div>
-      </section>
-
-      <section className="grid-section">
-        <div className="grid-header">
-          <h2>{t("tradingChances")}</h2>
-          {!done && (
-            <button className="ghost-btn" onClick={() => revealAll(ticketId)}>
-              {t("revealAll")}
-            </button>
-          )}
-        </div>
-        <div className="chance-grid">
-          {ticket.cells.map((cell, index) => (
-            <article className="chance" key={index}>
-              <div className="chance-num">{String(index + 1).padStart(2, "0")}</div>
-              <ScratchCard
-                revealed={issued.zones[zoneForSymbol(index)]}
-                onComplete={() => completeZone(ticketId, zoneForSymbol(index))}
-              >
-                <DirectionReveal symbol={cell.symbol} />
-              </ScratchCard>
-              <ScratchCard
-                revealed={issued.zones[zoneForPrize(index)]}
-                onComplete={() => completeZone(ticketId, zoneForPrize(index))}
-              >
-                <PrizeReveal value={cell.displayPrize} winning={cell.isWinning && done} />
-              </ScratchCard>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      {done && (
-        <section
-          className={`result ${ticket.finalPayout > 0 ? "result-win" : "result-lose"}`}
-          aria-live="polite"
-        >
-          {ticket.finalPayout > 0 ? (
-            <>
-              {isJackpot && <div className="jackpot">{t("jackpot")}</div>}
-              <div className="result-title">{t("resultWin")}</div>
-              <div className="result-amount">
-                {formatNumber(ticket.finalPayout)} <em>{t("tokens")}</em>
-              </div>
-              <div className="credited">✓ {t("credited")}</div>
-            </>
-          ) : (
-            <>
-              <div className="result-title">{t("resultLose")}</div>
-              <div className="muted">{t("resultLoseSub")}</div>
-            </>
-          )}
-          <button className="primary-btn" onClick={onScratchNext}>
-            {t("scratchNext")}
-          </button>
+        <section className="direction-panel">
+          <div>
+            <div className="section-label">YOUR DIRECTION</div>
+            <h2>{t("yourDirection")}</h2>
+          </div>
+          <div className="scratch-wrap scratch-wrap--direction">
+            <ScratchCard revealed={issued.zones[0]} onComplete={() => completeZone(ticketId, 0)}>
+              <DirectionReveal symbol={ticket.target} />
+            </ScratchCard>
+          </div>
         </section>
-      )}
+
+        <section className="grid-section">
+          <div className="grid-header">
+            <div>
+              <div className="section-label">10 TRADING CHANCES</div>
+              <h2>{t("tradingChances")}</h2>
+            </div>
+            {!done && (
+              <button className="ghost-btn" onClick={() => revealAll(ticketId)}>
+                {t("revealAll")}
+              </button>
+            )}
+          </div>
+          <div className="chance-grid">
+            {ticket.cells.map((cell, index) => (
+              <article className="chance" key={index}>
+                <div className="chance-num">{String(index + 1).padStart(2, "0")}</div>
+                <ScratchCard
+                  revealed={issued.zones[zoneForSymbol(index)]}
+                  onComplete={() => completeZone(ticketId, zoneForSymbol(index))}
+                >
+                  <DirectionReveal symbol={cell.symbol} />
+                </ScratchCard>
+                <ScratchCard
+                  revealed={issued.zones[zoneForPrize(index)]}
+                  onComplete={() => completeZone(ticketId, zoneForPrize(index))}
+                >
+                  <PrizeReveal value={cell.displayPrize} winning={cell.isWinning && done} />
+                </ScratchCard>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {done && (
+          <section
+            className={`result ${ticket.finalPayout > 0 ? "result-win" : "result-lose"}`}
+            aria-live="polite"
+          >
+            {ticket.finalPayout > 0 ? (
+              <>
+                {isJackpot && <div className="jackpot">{t("jackpot")}</div>}
+                <div className="result-title">{t("resultWin")}</div>
+                <div className="result-amount">
+                  {formatNumber(ticket.finalPayout)} <em>{t("tokens")}</em>
+                </div>
+                <div className="credited">✓ {t("credited")}</div>
+              </>
+            ) : (
+              <>
+                <div className="result-title">{t("resultLose")}</div>
+                <div className="muted">{t("resultLoseSub")}</div>
+              </>
+            )}
+          </section>
+        )}
+
+        <section className="rules">
+          <div>
+            <strong>{t("ruleMatch")}</strong>
+            <span>{t("ruleMatchDesc")}</span>
+          </div>
+          <div>
+            <strong>TF</strong>
+            <span>{t("ruleTfDesc")}</span>
+          </div>
+          <div>
+            <strong>{t("ruleStack")}</strong>
+            <span>{t("ruleStackDesc")}</span>
+          </div>
+        </section>
+
+        <footer className="ticket-footer">
+          <div>
+            <span>{t("ticketNo")}</span>
+            <strong className="mono">{ticket.displayNo}</strong>
+          </div>
+          <div className="footer-actions">
+            <Link to="/" className="ghost-btn">
+              {t("backHome")}
+            </Link>
+            {done && (
+              <button className="primary-btn" onClick={onScratchNext}>
+                {t("scratchNext")}
+              </button>
+            )}
+          </div>
+        </footer>
+      </section>
     </main>
   );
 }

@@ -288,99 +288,211 @@ h2 {
   font-size: 12px;
 }
 
-/* ── 刮奖页 ────────────────────────────── */
-.ticket-header {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+.demo-badge a {
+  color: var(--muted);
+}
+
+/* ── 后台管理 ──────────────────────────── */
+.admin-page {
+  padding-top: 56px;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 12px;
 }
 
-.ticket-header h2 {
-  text-align: center;
+.admin-header h1 {
+  font-size: 28px;
 }
 
-.back-btn {
-  font-size: 13px;
-  padding: 8px 12px;
+.admin-card {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel);
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.ticket-no {
-  text-align: center;
+.admin-card h2 {
+  font-size: 18px;
+}
+
+.admin-card h3 {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+
+.admin-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.status-active {
+  color: var(--green);
+}
+
+.status-paused {
+  color: var(--pink);
+}
+
+.danger-btn {
+  border: 1px solid rgba(255, 74, 168, 0.5);
+  border-radius: 12px;
+  padding: 11px 16px;
+  font-weight: 850;
+  cursor: pointer;
+  color: var(--pink);
+  background: rgba(255, 74, 168, 0.08);
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.admin-stats strong {
+  font-size: 18px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.admin-table th,
+.admin-table td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-table th {
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+/* ── 刮奖页（沿用原版 MVP 票面结构） ───────── */
+.page-wide {
+  width: min(900px, 100%);
+  padding-top: 56px;
+}
+
+.ticket-shell {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+  border-radius: 28px;
+  overflow: hidden;
+}
+
+.ticket-shell .hero {
+  border: 0;
+  border-radius: 0;
+  border-bottom: 1px solid var(--line);
+  padding: 28px 30px 22px;
+  background:
+    linear-gradient(135deg, rgba(156, 255, 59, 0.08), rgba(255, 74, 168, 0.08)),
+    repeating-linear-gradient(135deg, transparent 0 18px, rgba(255, 255, 255, 0.018) 18px 20px);
+}
+
+.section-label {
+  color: var(--muted);
+  letter-spacing: 0.14em;
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .chance-badge {
-  min-width: 64px;
-  padding: 6px 10px;
+  min-width: 90px;
+  padding: 12px 14px;
   border: 1px solid rgba(255, 213, 90, 0.45);
-  border-radius: 12px;
+  border-radius: 18px;
   text-align: center;
   background: rgba(255, 213, 90, 0.08);
 }
 
 .chance-badge strong {
   display: block;
-  font-size: 20px;
+  font-size: 30px;
   color: var(--gold);
 }
 
 .chance-badge span {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .direction-panel {
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--panel);
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  padding: 22px 30px;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  align-items: center;
+  gap: 18px;
+  border-bottom: 1px solid var(--line);
 }
 
-.direction-card .scratch-card {
-  min-height: 96px;
+.direction-panel h2 {
+  margin-top: 4px;
+  font-size: 22px;
+}
+
+.scratch-wrap--direction .scratch-card {
+  min-height: 92px;
 }
 
 .grid-section {
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--panel);
-  padding: 16px 20px;
+  padding: 24px 30px 28px;
 }
 
 .grid-header {
   display: flex;
-  align-items: center;
+  align-items: end;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+}
+
+.grid-header h2 {
+  margin-top: 4px;
+  font-size: 22px;
 }
 
 .chance-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
 }
 
 .chance {
   display: grid;
-  grid-template-columns: 36px 1fr 1fr;
-  gap: 8px;
+  grid-template-columns: 44px 1fr 1fr;
+  gap: 10px;
   align-items: stretch;
-  padding: 8px;
+  padding: 10px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 18px;
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012));
 }
 
 .chance-num {
-  border-radius: 10px;
+  min-height: 84px;
+  border-radius: 13px;
   display: grid;
   place-items: center;
   font-weight: 900;
-  font-size: 13px;
   color: var(--green);
   background: rgba(156, 255, 59, 0.08);
   border: 1px solid rgba(156, 255, 59, 0.26);
@@ -389,8 +501,8 @@ h2 {
 /* ── 刮除区域 ──────────────────────────── */
 .scratch-card {
   position: relative;
-  min-height: 78px;
-  border-radius: 12px;
+  min-height: 84px;
+  border-radius: 14px;
   overflow: hidden;
   background: #0d0914;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -417,14 +529,14 @@ h2 {
 
 .reveal .main {
   display: block;
-  font-size: 19px;
+  font-size: 23px;
   font-weight: 950;
 }
 
 .reveal .sub {
   display: block;
-  margin-top: 2px;
-  font-size: 10px;
+  margin-top: 3px;
+  font-size: 11px;
   letter-spacing: 0.08em;
   color: var(--muted);
 }
@@ -442,6 +554,7 @@ h2 {
 }
 
 .prize .main {
+  font-size: 25px;
   color: var(--gold);
 }
 
@@ -460,25 +573,21 @@ h2 {
 
 /* ── 结果区 ────────────────────────────── */
 .result {
-  border-radius: 18px;
-  padding: 24px 20px;
+  padding: 26px 30px;
   text-align: center;
   display: flex;
   flex-direction: column;
   gap: 10px;
   align-items: center;
+  border-top: 1px solid var(--line);
 }
 
 .result-win {
-  border: 1px solid rgba(255, 213, 90, 0.5);
-  background:
-    radial-gradient(circle at 50% 0%, rgba(255, 213, 90, 0.12), transparent 70%),
-    var(--panel);
+  background: radial-gradient(circle at 50% 0%, rgba(255, 213, 90, 0.12), transparent 70%);
 }
 
 .result-lose {
-  border: 1px solid var(--line);
-  background: var(--panel);
+  background: transparent;
 }
 
 .jackpot {
@@ -557,7 +666,51 @@ h2 {
   gap: 4px;
 }
 
+/* ── 票面内规则区与票脚 ─────────────────── */
+.ticket-shell .rules {
+  border: 0;
+  border-radius: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+}
+
+.ticket-footer {
+  padding: 18px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ticket-footer span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.footer-actions {
+  display: flex;
+  gap: 10px;
+}
+
 @media (max-width: 640px) {
+  .page-wide {
+    padding-top: 56px;
+  }
+
+  .ticket-shell .hero,
+  .grid-section,
+  .ticket-footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .direction-panel {
+    grid-template-columns: 1fr;
+    padding: 18px 16px;
+  }
+
   .chance-grid {
     grid-template-columns: 1fr;
   }
@@ -569,5 +722,20 @@ h2 {
   .rules > div + div {
     border-left: 0;
     border-top: 1px solid var(--line);
+  }
+
+  .brand-row {
+    grid-template-columns: auto 1fr;
+  }
+
+  .chance-badge {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .ticket-footer {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
   }
 }

@@ -29,6 +29,8 @@ export interface DemoState {
   issued: IssuedTicket[];
   balance: number;
   totalWon: number;
+  /** 活动暂停：禁止新领取，已领取票仍可继续刮开与入账 */
+  paused: boolean;
 }
 
 const STORAGE_KEY = "tf-scratch-demo-v1";
@@ -74,7 +76,7 @@ function deriveTotals(issued: IssuedTicket[]): { balance: number; totalWon: numb
 }
 
 function emptyState(): DemoState {
-  return { issued: [], balance: 0, totalWon: 0 };
+  return { issued: [], balance: 0, totalWon: 0, paused: false };
 }
 
 function loadState(): DemoState {
@@ -95,7 +97,8 @@ function loadState(): DemoState {
         issued.push(ticket);
       }
     }
-    return { issued, ...deriveTotals(issued) };
+    const paused = (parsed as Record<string, unknown>).paused === true;
+    return { issued, paused, ...deriveTotals(issued) };
   } catch {
     return emptyState();
   }
@@ -158,6 +161,7 @@ const CLAIM_RANDOM_ATTEMPTS = 32;
  * O(totalTickets) 内结束，不会无限循环。
  */
 export function claimTicket(): IssuedTicket {
+  if (state.paused) throw new Error("paused");
   const used = new Set(state.issued.map((t) => t.ticketId));
   const total = DEFAULT_CONFIG.totalTickets;
   if (used.size >= total) throw new Error("sold out");
@@ -214,7 +218,7 @@ function updateTicket(ticketId: number, updater: (t: IssuedTicket) => IssuedTick
 
   const issued = [...state.issued];
   issued[index] = after;
-  setState({ issued, ...deriveTotals(issued) });
+  setState({ ...state, issued, ...deriveTotals(issued) });
 }
 
 /** 上报单个刮除区域完成（幂等） */
@@ -233,4 +237,22 @@ export function revealAll(ticketId: number) {
   updateTicket(ticketId, (t) =>
     t.zones.every(Boolean) ? t : { ...t, zones: new Array(ZONES_PER_TICKET).fill(true) },
   );
+}
+
+/* ── 后台管理操作（演示版对应正式版管理员 API） ── */
+
+/** 暂停/恢复活动：只影响新领取，不影响已领取票 */
+export function setPaused(paused: boolean) {
+  if (state.paused === paused) return;
+  setState({ ...state, paused });
+}
+
+/** 重置全部演示数据（对应正式版的清空测试环境，不存在于生产） */
+export function resetDemo() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    /* 忽略 */
+  }
+  setState(emptyState());
 }

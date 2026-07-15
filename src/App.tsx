@@ -1,5 +1,6 @@
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { I18nProvider, useI18n } from "./i18n";
+import { Admin } from "./pages/Admin";
 import { History } from "./pages/History";
 import { Home } from "./pages/Home";
 import { TicketPage } from "./pages/TicketPage";
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/ticket/:id" element={<TicketPage />} />
           <Route path="/history" element={<History />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </HashRouter>

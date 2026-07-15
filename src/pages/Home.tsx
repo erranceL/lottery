@@ -41,8 +41,8 @@ export function Home() {
     try {
       const issued = claimTicket();
       navigate(`/ticket/${issued.ticketId}`);
-    } catch {
-      alert(t("soldOut"));
+    } catch (err) {
+      alert(err instanceof Error && err.message === "paused" ? t("activityPaused") : t("soldOut"));
     }
   };
 
@@ -113,7 +113,9 @@ export function Home() {
           ))}
       </section>
 
-      <footer className="demo-badge">{t("demoBadge")}</footer>
+      <footer className="demo-badge">
+        {t("demoBadge")} · <Link to="/admin">{t("adminConsole")}</Link>
+      </footer>
     </main>
   );
 }

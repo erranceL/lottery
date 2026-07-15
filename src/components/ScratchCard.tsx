@@ -16,7 +16,8 @@ interface Props {
 
 /**
  * 单个刮除区域：Canvas 覆盖层 + 指针轨迹擦除 + 50% 自动揭晓。
- * 键盘用户可聚焦后按 Enter / 空格直接揭晓该区域。
+ * 产品规则要求必须真实刮除，单个区域不提供点击/键盘直接翻开；
+ * 无法使用指针的用户可通过“一键刮开”按钮完成整张票。
  */
 export function ScratchCard({ revealed, onComplete, children }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -40,6 +41,7 @@ export function ScratchCard({ revealed, onComplete, children }: Props) {
 
     let finished = false;
     let drawing = false;
+    let painted = false;
     let strokesSinceCheck = 0;
     let lastPoint: { x: number; y: number } | null = null;
     let paintedWidth = 0;
@@ -47,7 +49,9 @@ export function ScratchCard({ revealed, onComplete, children }: Props) {
 
     const paintCover = () => {
       const rect = card.getBoundingClientRect();
+      // 布局尚未完成时跳过，ResizeObserver 会在尺寸就绪后补绘
       if (rect.width === 0 || rect.height === 0) return;
+      painted = true;
       paintedWidth = rect.width;
       paintedHeight = rect.height;
       const ratio = Math.min(Math.max(window.devicePixelRatio || 1, 1), MAX_DPR);
@@ -83,6 +87,8 @@ export function ScratchCard({ revealed, onComplete, children }: Props) {
     };
 
     const clearedRatio = () => {
+      // 覆盖层尚未绘制时画布是透明的，不能误判为“已刮开”
+      if (!painted) return 0;
       const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
       let cleared = 0;
       let sampled = 0;
@@ -94,7 +100,7 @@ export function ScratchCard({ revealed, onComplete, children }: Props) {
     };
 
     const scratch = (clientX: number, clientY: number) => {
-      if (finished) return;
+      if (finished || !painted) return;
       const rect = canvas.getBoundingClientRect();
       const x = clientX - rect.left;
       const y = clientY - rect.top;
@@ -135,12 +141,6 @@ export function ScratchCard({ revealed, onComplete, children }: Props) {
       lastPoint = null;
       if (!finished && clearedRatio() > REVEAL_THRESHOLD) finish();
     };
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        finish();
-      }
-    };
 
     paintCover();
     // 旋转屏幕/窗口缩放后覆盖层尺寸失真，重绘该未完成区域
@@ -158,7 +158,6 @@ export function ScratchCard({ revealed, onComplete, children }: Props) {
     canvas.addEventListener("pointermove", onPointerMove);
     canvas.addEventListener("pointerup", onPointerEnd);
     canvas.addEventListener("pointercancel", onPointerEnd);
-    canvas.addEventListener("keydown", onKeyDown);
 
     return () => {
       resizeObserver.disconnect();
@@ -166,7 +165,6 @@ export function ScratchCard({ revealed, onComplete, children }: Props) {
       canvas.removeEventListener("pointermove", onPointerMove);
       canvas.removeEventListener("pointerup", onPointerEnd);
       canvas.removeEventListener("pointercancel", onPointerEnd);
-      canvas.removeEventListener("keydown", onKeyDown);
     };
   }, [revealed]);
 
@@ -176,15 +174,7 @@ export function ScratchCard({ revealed, onComplete, children }: Props) {
       <div className="reveal-content" aria-hidden={!revealed}>
         {children}
       </div>
-      {!revealed && (
-        <canvas
-          ref={canvasRef}
-          className="scratch-layer"
-          role="button"
-          tabIndex={0}
-          aria-label={hint}
-        />
-      )}
+      {!revealed && <canvas ref={canvasRef} className="scratch-layer" aria-hidden="true" />}
     </div>
   );
 }

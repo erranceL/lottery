@@ -58,6 +58,8 @@ const dict = {
     demoBadge: "演示环境 · 本地模拟账务",
     maxPrize: "最高可得",
     notFound: "票据不存在",
+    activityPaused: "活动已暂停，暂时无法领取",
+    adminConsole: "后台管理",
     langSwitch: "EN",
   },
   en: {
@@ -114,6 +116,8 @@ const dict = {
     demoBadge: "Demo build · local simulated ledger",
     maxPrize: "Top prize",
     notFound: "Ticket not found",
+    activityPaused: "The event is paused. Claiming is temporarily unavailable.",
+    adminConsole: "Admin",
     langSwitch: "中文",
   },
 } as const;
